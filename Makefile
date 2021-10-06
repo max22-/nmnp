@@ -35,7 +35,7 @@ $(BIN_DIR)/hello.text.bin: $(BUILD_DIR)/hello
 	mips-linux-gnu-objcopy -O binary --only-section=.text $(BUILD_DIR)/hello $(BIN_DIR)/hello.text.bin
 
 $(BIN_DIR)/hello.data.bin: $(BUILD_DIR)/hello
-	mips-linux-gnu-objcopy -O binary --only-section=.text $(BUILD_DIR)/hello $(BIN_DIR)/hello.data.bin
+	mips-linux-gnu-objcopy -O binary --only-section=.data $(BUILD_DIR)/hello $(BIN_DIR)/hello.data.bin
 
 
 .PHONY: run format clean
