@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
     printf("no mips no problem\n\n");
     mips = mips_new(1024, 1024);
     mips_load_section(&mips->text, "./bin/hello.text.bin");
+    mips->text.addr = 0x004000f0;
     mips_load_section(&mips->data, "./bin/hello.data.bin");
     mips_dump_registers(mips);
 

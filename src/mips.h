@@ -4,8 +4,8 @@
 #include <stdint.h>
 
 typedef struct {
-    uint32_t *mem;
-    uint32_t size;
+    uint8_t *mem;
+    uint32_t addr, size;
 } section_t;
 
 typedef struct {

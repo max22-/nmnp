@@ -13,14 +13,14 @@ mips_t *mips_new(uint32_t text_size, uint32_t data_size)
         return NULL;
     }
     m->text.size = text_size;
-    m->text.mem = (uint32_t*)malloc(sizeof(uint32_t)*text_size);
+    m->text.mem = (uint8_t*)malloc(text_size);
     if(m->text.mem == NULL) {
         debug("Cannot allocate memory\n");
         free(m);
         return NULL;
     }
     m->data.size = data_size;
-    m->data.mem = (uint32_t*)malloc(sizeof(uint32_t)*data_size);
+    m->data.mem = (uint8_t*)malloc(data_size);
     if(m->data.mem == NULL) {
         debug("Cannot allocate memory\n");
         free(m->text.mem);
@@ -28,7 +28,7 @@ mips_t *mips_new(uint32_t text_size, uint32_t data_size)
         return NULL;
     }
     memset(m->reg, 0, sizeof(m->reg));
-    m->pc = 0x00400000;
+    m->pc = 0x004000f0;
     return m;
 }
 
@@ -55,15 +55,38 @@ void mips_dump_registers(mips_t *m)
     #define X(name) printf("$" #name " = 0x%08x\n", m->reg[name]);
     REGISTERS
     #undef X
+    printf("pc = 0x%08x\n", m->pc);
 }
 
-void mips_step(mips_t *mips)
+static uint32_t mips_read_mem(mips_t *m, uint32_t addr)
 {
-    uint8_t *addr = (uint8_t*)mips->text.mem + mips->pc - 0x00400000;
-    uint8_t opcode = *addr >> 2;
+    uint32_t o;
+    o = addr - m->text.addr;
+    printf("o = %d .text.size = %d\n", o, m->text.size);
+    if(o >= 0 && o < m->text.size)
+        return *(uint32_t*)(m->text.mem + o);
+    o = addr - m->data.addr;
+    if(o >= 0 && o < m->data.size)
+        return *(uint32_t*)(m->data.mem + o);
+    debug("Invalid memory location\n");
+    return 0;
+}
+
+static void mips_write_mem(mips_t *m, uint32_t addr, uint32_t val)
+{
+    uint32_t o;
+    o = addr - m->data.addr;
+    if(o >= 0 && o < m->data.size)
+        return *(uint32_t*)(m->data.mem + o);
+    debug("Invalid memory location\n");
+}
+
+void mips_step(mips_t *m)
+{
+    uint32_t inst = mips_read_mem(m, m->pc);
+    uint8_t opcode = inst >> 26;
     printf("opcode = %d\t", opcode);
-    for(int i = 0; i < 4; i++)
-        printf("0x%02x ", *(addr++));
+    printf("0x%08x ", inst);
     printf("\n");
-    mips->pc += 4;
+    m->pc += 4;
 }
