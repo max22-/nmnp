@@ -1,11 +1,9 @@
 #include "mips.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define debug(...) fprintf(stderr, __VA_ARGS__)
-
-static uint32_t reg[32];
-static uint32_t pc = 0x00400000;
 
 mips_t *mips_new(uint32_t text_size, uint32_t data_size)
 {
@@ -29,6 +27,8 @@ mips_t *mips_new(uint32_t text_size, uint32_t data_size)
         free(m);
         return NULL;
     }
+    memset(m->reg, 0, sizeof(m->reg));
+    m->pc = 0x00400000;
     return m;
 }
 
@@ -50,20 +50,20 @@ uint8_t mips_load_section(section_t *section, char *bin_file)
     return ret;
 }
 
-void mips_dump_registers()
+void mips_dump_registers(mips_t *m)
 {
-    #define X(name) printf("$" #name " = 0x%08x\n", reg[name]);
+    #define X(name) printf("$" #name " = 0x%08x\n", m->reg[name]);
     REGISTERS
     #undef X
 }
 
 void mips_step(mips_t *mips)
 {
-    uint8_t *addr = (uint8_t*)mips->text.mem + pc - 0x00400000;
+    uint8_t *addr = (uint8_t*)mips->text.mem + mips->pc - 0x00400000;
     uint8_t opcode = *addr >> 2;
     printf("opcode = %d\t", opcode);
     for(int i = 0; i < 4; i++)
         printf("0x%02x ", *(addr++));
     printf("\n");
-    pc+=4;
+    mips->pc += 4;
 }

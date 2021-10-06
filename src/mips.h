@@ -11,6 +11,8 @@ typedef struct {
 typedef struct {
     section_t text;
     section_t data;
+    uint32_t reg[32];
+    uint32_t pc;
 } mips_t;
 
 #define REGISTERS \
@@ -55,7 +57,7 @@ enum {
 
 mips_t *mips_new(uint32_t text_size, uint32_t data_size);
 uint8_t mips_load_section(section_t *section, char *bin_file);
-void mips_dump_registers();
-void mips_step();
+void mips_dump_registers(mips_t*);
+void mips_step(mips_t*);
 
 #endif
