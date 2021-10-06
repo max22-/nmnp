@@ -15,8 +15,13 @@ int main(int argc, char *argv[])
 
     mips_dump_registers(mips);
 
-    for(int i =0; i < 10; i++)
+    for(int i =0; i < 10; i++) {
         mips_step(mips);
+        if(mips->error != NO_ERROR) {
+            printf("error !!!\n");
+            return 1;
+        }
+    }
 
     return 0;
 }

@@ -4,7 +4,7 @@
 .asciiz "Hello, world !\n"
 .text
 __start:
-    li $v0, 4001
-    li $a0, 45
+    li $v0, 1
+    li $a0, -45
     syscall
     j __start

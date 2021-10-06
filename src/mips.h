@@ -5,6 +5,9 @@
 
 typedef enum {NO_ERROR, SEGFAULT, NON_READABLE_SEGMENT, NON_WRITABLE_SEGMENT, NON_EXECUTABLE_SEGMENT} mips_error_t;
 
+typedef enum {OP_R_TYPE, OP_J = 0x2, OP_JAL, OP_ADDIU = 0x9} mips_opcode_t;
+typedef enum {FUNC_SYSCALL = 0xc} mips_function_t;
+
 typedef struct {
     uint8_t *mem;
     uint32_t addr, size;
