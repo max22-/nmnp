@@ -15,7 +15,7 @@ LDFLAGS =
 
 CC = gcc
 
-all: $(BIN_DIR)/$(EXEC) $(BIN_DIR)/hello.text.bin $(BIN_DIR)/hello.data.bin
+all: $(BIN_DIR)/$(EXEC) $(BIN_DIR)/hello
 
 $(BIN_DIR)/$(EXEC): $(OBJS)
 	mkdir -p bin
@@ -26,22 +26,16 @@ $(BUILD_DIR)/%.c.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/hello.o: hello.s
-	mips-linux-gnu-as hello.s -o $(BUILD_DIR)/hello.o
+	mipsel-linux-gnu-as hello.s -o $(BUILD_DIR)/hello.o
 
-$(BUILD_DIR)/hello: $(BUILD_DIR)/hello.o
-	mips-linux-gnu-ld $(BUILD_DIR)/hello.o -o $(BUILD_DIR)/hello
-
-$(BIN_DIR)/hello.text.bin: $(BUILD_DIR)/hello
-	mips-linux-gnu-objcopy -O binary --only-section=.text $(BUILD_DIR)/hello $(BIN_DIR)/hello.text.bin
-
-$(BIN_DIR)/hello.data.bin: $(BUILD_DIR)/hello
-	mips-linux-gnu-objcopy -O binary --only-section=.data $(BUILD_DIR)/hello $(BIN_DIR)/hello.data.bin
+$(BIN_DIR)/hello: $(BUILD_DIR)/hello.o
+	mipsel-linux-gnu-ld $(BUILD_DIR)/hello.o -o $(BIN_DIR)/hello
 
 
 .PHONY: run format clean
 
 run: all
-	$(BIN_DIR)/$(EXEC)
+	$(BIN_DIR)/$(EXEC) $(BIN_DIR)/hello
 
 format:
 	find src/* -exec clang-format -i {} \;

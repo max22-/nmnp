@@ -3,16 +3,20 @@
 
 #include <stdint.h>
 
+typedef enum {NO_ERROR, SEGFAULT, NON_READABLE_SEGMENT, NON_WRITABLE_SEGMENT, NON_EXECUTABLE_SEGMENT} mips_error_t;
+
 typedef struct {
     uint8_t *mem;
     uint32_t addr, size;
-} section_t;
+    uint8_t flags;  /* 1 : EXECUTE, 2 : WRITE, 4 : READ */
+} segment_t;
 
 typedef struct {
-    section_t text;
-    section_t data;
+    segment_t *segments;
+    uint32_t sgmts_num;
     uint32_t reg[32];
     uint32_t pc;
+    mips_error_t error;
 } mips_t;
 
 #define REGISTERS \
@@ -55,8 +59,7 @@ enum {
 };
 #undef X
 
-mips_t *mips_new(uint32_t text_size, uint32_t data_size);
-uint8_t mips_load_section(section_t *section, char *bin_file);
+mips_t *mips_new();
 void mips_dump_registers(mips_t*);
 void mips_step(mips_t*);
 

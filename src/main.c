@@ -1,14 +1,18 @@
 #include <stdio.h>
 #include "mips.h"
+#include "load_elf.h"
+
 
 int main(int argc, char *argv[])
 {
     mips_t *mips;
     printf("no mips no problem\n\n");
-    mips = mips_new(1024, 1024);
-    mips_load_section(&mips->text, "./bin/hello.text.bin");
-    mips->text.addr = 0x004000f0;
-    mips_load_section(&mips->data, "./bin/hello.data.bin");
+    if(argc < 2) {
+        fprintf(stderr, "usage : %s elf_file\n", argv[0]);
+        return 1;
+    }
+    mips = load_elf(argv[1]);
+
     mips_dump_registers(mips);
 
     for(int i =0; i < 10; i++)
