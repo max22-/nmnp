@@ -97,7 +97,8 @@ void mips_step(mips_t *m)
             rs = inst >> 21 & 0x1f;
             rt = inst >> 16 & 0x1f;
             imm = sign_extend(inst & 0xFFFF, 16);
-            m->reg[rt] = m->reg[rs] + imm;
+            if(rt != zero)
+                m->reg[rt] = m->reg[rs] + imm;
             printf("addiu %d, %d, %d\n", rt, rs, imm);
             m->pc += 4;
             break;
