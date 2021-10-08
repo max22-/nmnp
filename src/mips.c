@@ -15,6 +15,22 @@ mips_t *mips_new()
     return m;
 }
 
+void mips_free(mips_t *m)
+{
+    uint8_t *mem;
+    if(m != NULL) {
+        if(m->segments != NULL) {
+            for(int i = 0; i < m->sgmts_num; i++) {
+                mem = m->segments[i].mem;
+                if(m != NULL)
+                    free(mem);
+            }
+            free(m->segments);
+        }
+        free(m);
+    }
+}
+
 void mips_dump_registers(mips_t *m)
 {
     #define X(name) printf("$" #name " = 0x%08x\n", m->reg[name]);

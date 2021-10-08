@@ -23,5 +23,7 @@ int main(int argc, char *argv[])
         }
     }
 
+    mips_free(mips);
+
     return 0;
 }
